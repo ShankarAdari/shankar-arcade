@@ -29,7 +29,7 @@ const GAMES_DATA = [
 
 export default function Hub() {
   const navigate = useNavigate();
-  const { currentPlayer, logout, getPersonalBest } = usePlayer();
+  const { currentPlayer, levelInfo, logout, getPersonalBest } = usePlayer();
   const [selectedGenre, setSelectedGenre] = useState('ALL');
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -52,21 +52,63 @@ export default function Hub() {
 
   return (
     <div style={{ minHeight: '100vh', padding: '24px 16px', maxWidth: 1200, margin: '0 auto' }}>
-      {/* Header */}
-      <header className="cyber-panel" style={{ padding: '16px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
-        <div>
-          <h1 className="title-text" style={{ fontSize: 32, margin: 0 }}>SHANKAR'S ARCADE</h1>
-          <div style={{ fontFamily: 'var(--font-hud)', fontSize: 12, color: 'var(--accent-green)', letterSpacing: 2 }}>
-            [ OPERATIVE: {currentPlayer.name.toUpperCase()} | 22 MISSIONS AVAILABLE ]
+      {/* Operative Header with Level 1-25 Badge & XP Progress */}
+      <header className="cyber-panel cyber-corner" style={{ padding: '20px 24px', marginBottom: 24 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+            {/* Level Badge */}
+            <div style={{
+              width: 56,
+              height: 56,
+              background: 'var(--accent-yellow)',
+              color: '#0F1015',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontFamily: 'var(--font-title)',
+              fontWeight: 900,
+              boxShadow: '0 0 15px rgba(252,238,9,0.5)',
+              flexShrink: 0
+            }}>
+              <span style={{ fontSize: 10, lineHeight: 1 }}>LVL</span>
+              <span style={{ fontSize: 24, lineHeight: 1 }}>{levelInfo.level}</span>
+            </div>
+
+            <div>
+              <h1 className="title-text" style={{ fontSize: 32, margin: 0 }}>SHANKAR'S ARCADE</h1>
+              <div style={{ fontFamily: 'var(--font-hud)', fontSize: 12, color: 'var(--accent-green)', letterSpacing: 2 }}>
+                OPERATIVE: {currentPlayer.name.toUpperCase()} &nbsp;|&nbsp; TITLE: [{levelInfo.title}]
+              </div>
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', gap: 12 }}>
+            <button className="cyber-btn cyber-btn-outline cyber-btn-sm" onClick={() => navigate('/leaderboard')}>
+              🏆 LEADERBOARDS
+            </button>
+            <button className="cyber-btn cyber-btn-danger cyber-btn-sm" onClick={() => { logout(); navigate('/'); }}>
+              SWITCH OPERATIVE
+            </button>
           </div>
         </div>
-        <div style={{ display: 'flex', gap: 12 }}>
-          <button className="cyber-btn cyber-btn-outline cyber-btn-sm" onClick={() => navigate('/leaderboard')}>
-            🏆 LEADERBOARDS
-          </button>
-          <button className="cyber-btn cyber-btn-danger cyber-btn-sm" onClick={() => { logout(); navigate('/'); }}>
-            SWITCH OPERATIVE
-          </button>
+
+        {/* Level XP Progress Bar */}
+        <div style={{ marginTop: 16 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'var(--font-hud)', fontSize: 10, color: 'var(--text-muted)', marginBottom: 4 }}>
+            <span>LEVEL {levelInfo.level} / 25 PROGRESS</span>
+            <span>{levelInfo.currentXP} / {levelInfo.xpNeeded} XP ({levelInfo.progressPercent}%)</span>
+          </div>
+          <div style={{ background: 'rgba(252,238,9,0.1)', height: 8, borderRadius: 4, overflow: 'hidden', border: '1px solid rgba(252,238,9,0.3)' }}>
+            <div
+              style={{
+                width: `${levelInfo.progressPercent}%`,
+                height: '100%',
+                background: 'linear-gradient(90deg, #00FF66 0%, #FCEE09 100%)',
+                transition: 'width 0.4s ease'
+              }}
+            />
+          </div>
         </div>
       </header>
 
