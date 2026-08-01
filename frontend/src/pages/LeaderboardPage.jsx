@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getLeaderboard, getHistory } from '../api/scores';
+import { usePlayer } from '../context/PlayerContext';
 import { Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -28,28 +28,12 @@ ChartJS.register(
 export default function LeaderboardPage() {
   const { slug } = useParams();
   const navigate = useNavigate();
-  const [game, setGame] = useState(null);
-  const [leaderboard, setLeaderboard] = useState([]);
-  const [yourRank, setYourRank] = useState(null);
-  const [yourBest, setYourBest] = useState(null);
-  const [history, setHistory] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { currentPlayer, getLeaderboard, getHistory } = usePlayer();
 
   const targetSlug = slug || 'space-invaders';
 
-  useEffect(() => {
-    setLoading(true);
-    Promise.all([
-      getLeaderboard(targetSlug).catch(() => ({ leaderboard: [] })),
-      getHistory(targetSlug).catch(() => ({ history: [] }))
-    ]).then(([lbData, histData]) => {
-      setGame(lbData.game);
-      setLeaderboard(lbData.leaderboard || []);
-      setYourRank(lbData.yourRank);
-      setYourBest(lbData.yourBest);
-      setHistory(histData.history || []);
-    }).finally(() => setLoading(false));
-  }, [targetSlug]);
+  const { leaderboard, yourBest, yourRank } = getLeaderboard(targetSlug);
+  const history = getHistory(targetSlug);
 
   const chartData = {
     labels: history.map((_, i) => `Attempt #${i + 1}`),
@@ -102,61 +86,62 @@ export default function LeaderboardPage() {
         <div style={{ fontFamily: 'var(--font-hud)', fontSize: 11, color: 'var(--accent-green)', letterSpacing: 4, marginBottom: 8 }}>
           [ TACTICAL RANKINGS & ANALYTICS ]
         </div>
-        <h1 className="title-lg">{game?.title?.toUpperCase() || 'LEADERBOARD'}</h1>
+        <h1 className="title-lg">{targetSlug.replace(/-/g, ' ').toUpperCase()} LEADERBOARD</h1>
       </div>
 
-      {loading ? (
-        <div style={{ textAlign: 'center', padding: 64 }}>
-          <div className="crosshair-icon">⊕</div>
-          <p style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)', marginTop: 16 }}>[ RETRIEVING DATA... ]</p>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 24 }}>
+        {/* Top 10 Table */}
+        <div className="cyber-panel cyber-corner" style={{ padding: 24 }}>
+          <h3 style={{ fontFamily: 'var(--font-title)', fontSize: 24, color: 'var(--accent-yellow)', marginBottom: 16 }}>
+            TOP OPERATIVES
+          </h3>
+
+          {currentPlayer && (
+            <div style={{ padding: 12, background: 'rgba(0, 255, 102, 0.1)', border: '1px solid var(--accent-green)', marginBottom: 16, display: 'flex', justifyContent: 'space-between' }}>
+              <span style={{ fontFamily: 'var(--font-hud)', fontSize: 12, color: 'var(--accent-green)' }}>
+                {currentPlayer.name.toUpperCase()} RANK: {yourRank ? `#${yourRank}` : 'NO RUNS YET'}
+              </span>
+              <span style={{ fontFamily: 'var(--font-hud)', fontSize: 12, color: 'var(--accent-yellow)' }}>
+                BEST: {yourBest !== null ? yourBest.toLocaleString() : '---'}
+              </span>
+            </div>
+          )}
+
+          {leaderboard.length === 0 ? (
+            <p style={{ color: 'var(--text-muted)' }}>No scores submitted yet for this mission.</p>
+          ) : (
+            <div>
+              {leaderboard.map((entry, idx) => (
+                <div key={idx} className={`lb-row rank-${entry.rank}`} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 12px', borderBottom: '1px solid rgba(252,238,9,0.1)' }}>
+                  <span style={{ fontFamily: 'var(--font-hud)', color: entry.rank === 1 ? '#FFD700' : entry.rank === 2 ? '#C0C0C0' : entry.rank === 3 ? '#CD7F32' : 'var(--text-muted)' }}>
+                    #{entry.rank}
+                  </span>
+                  <span style={{ fontFamily: 'var(--font-mono)', color: entry.name === currentPlayer?.name ? 'var(--accent-green)' : 'var(--text-primary)' }}>
+                    {entry.name}
+                  </span>
+                  <span style={{ fontFamily: 'var(--font-hud)', color: 'var(--accent-yellow)', fontWeight: 700 }}>
+                    {entry.score.toLocaleString()}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
-      ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 24 }}>
-          {/* Top 10 Table */}
-          <div className="cyber-panel cyber-corner" style={{ padding: 24 }}>
-            <h3 style={{ fontFamily: 'var(--font-title)', fontSize: 24, color: 'var(--accent-yellow)', marginBottom: 16 }}>
-              TOP OPERATIVES
-            </h3>
 
-            {yourRank && (
-              <div style={{ padding: 12, background: 'rgba(0, 255, 102, 0.1)', border: '1px solid var(--accent-green)', marginBottom: 16, display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ fontFamily: 'var(--font-hud)', fontSize: 12, color: 'var(--accent-green)' }}>YOUR RANK: #{yourRank}</span>
-                <span style={{ fontFamily: 'var(--font-hud)', fontSize: 12, color: 'var(--accent-yellow)' }}>BEST: {yourBest?.toLocaleString()}</span>
-              </div>
-            )}
-
-            {leaderboard.length === 0 ? (
-              <p style={{ color: 'var(--text-muted)' }}>No scores submitted yet for this mission.</p>
-            ) : (
-              <div>
-                {leaderboard.map((entry, idx) => (
-                  <div key={idx} className={`lb-row rank-${entry.rank}`}>
-                    <span style={{ fontFamily: 'var(--font-hud)', color: entry.rank === 1 ? '#FFD700' : entry.rank === 2 ? '#C0C0C0' : entry.rank === 3 ? '#CD7F32' : 'var(--text-muted)' }}>
-                      #{entry.rank}
-                    </span>
-                    <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>{entry.name}</span>
-                    <span style={{ fontFamily: 'var(--font-hud)', color: 'var(--accent-yellow)', fontWeight: 700 }}>{entry.score.toLocaleString()}</span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* History Chart */}
-          <div className="cyber-panel cyber-corner" style={{ padding: 24 }}>
-            <h3 style={{ fontFamily: 'var(--font-title)', fontSize: 24, color: 'var(--accent-yellow)', marginBottom: 16 }}>
-              PERFORMANCE PROGRESSION
-            </h3>
-            {history.length === 0 ? (
-              <p style={{ color: 'var(--text-muted)' }}>No personal history recorded for this mission yet.</p>
-            ) : (
-              <div style={{ marginTop: 20 }}>
-                <Line data={chartData} options={chartOptions} />
-              </div>
-            )}
-          </div>
+        {/* History Chart */}
+        <div className="cyber-panel cyber-corner" style={{ padding: 24 }}>
+          <h3 style={{ fontFamily: 'var(--font-title)', fontSize: 24, color: 'var(--accent-yellow)', marginBottom: 16 }}>
+            PERFORMANCE PROGRESSION
+          </h3>
+          {history.length === 0 ? (
+            <p style={{ color: 'var(--text-muted)' }}>No personal history recorded for this mission yet.</p>
+          ) : (
+            <div style={{ marginTop: 20 }}>
+              <Line data={chartData} options={chartOptions} />
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 }
