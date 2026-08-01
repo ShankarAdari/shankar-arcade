@@ -13,4 +13,10 @@ export const gameRegistry = {
   '2048': lazy(() => import('./Game2048/Game2048')),
   'tetris': lazy(() => import('./Tetris/Tetris')),
   'pacman': lazy(() => import('./Pacman/Pacman')),
+  'cyber-racer': lazy(() => import('./CyberRacer/CyberRacer')),
+  'target-sniper': lazy(() => import('./TargetSniper/TargetSniper')),
+  'laser-pong': lazy(() => import('./LaserPong/LaserPong')),
+  'lunar-lander': lazy(() => import('./LunarLander/LunarLander')),
+  'cyber-frogger': lazy(() => import('./CyberFrogger/CyberFrogger')),
+  'minesweeper': lazy(() => import('./Minesweeper/Minesweeper')),
 };

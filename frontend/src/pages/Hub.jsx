@@ -7,14 +7,20 @@ const GAMES_DATA = [
   { slug: 'missile-defense', title: 'Missile Defense', genre: 'Shooter', description: 'Intercept incoming missiles before they destroy your base' },
   { slug: 'asteroid-blaster', title: 'Asteroid Blaster', genre: 'Shooter', description: 'Rotate your ship and blast asteroids that split on impact' },
   { slug: 'zombie-survival', title: 'Zombie Survival', genre: 'Shooter', description: 'Survive endless zombie waves in a post-apocalyptic warzone' },
+  { slug: 'target-sniper', title: 'Target Sniper', genre: 'Shooter', description: 'Precision tactical marksmanship target timing' },
   { slug: 'snake', title: 'Snake', genre: 'Arcade', description: 'Classic snake — grow longer without hitting yourself' },
   { slug: 'flappy-bird', title: 'Flappy Rocket', genre: 'Endless Runner', description: 'Fly a rocket through enemy missile gaps' },
+  { slug: 'cyber-racer', title: 'Cyber Racer', genre: 'Endless Runner', description: 'High-speed highway obstacle evasion' },
   { slug: 'breakout', title: 'Breakout', genre: 'Arcade', description: 'Destroy all bricks with your tactical bouncing shot' },
   { slug: 'whack-a-mole', title: 'Whack-a-Mole', genre: 'Reflex', description: 'Destroy targets before they disappear' },
+  { slug: 'laser-pong', title: 'Laser Pong', genre: 'Arcade', description: 'High-speed neon laser paddle table tennis' },
+  { slug: 'lunar-lander', title: 'Lunar Lander', genre: 'Arcade', description: 'Control thrusters to safely land on plasma pads' },
+  { slug: 'cyber-frogger', title: 'Cyber Frogger', genre: 'Arcade', description: 'Cross busy cyber highways to reach safety' },
   { slug: 'memory-match', title: 'Memory Match', genre: 'Puzzle', description: 'Match classified intel cards before time runs out' },
   { slug: '2048', title: '2048', genre: 'Puzzle', description: 'Merge numbered tiles to reach 2048' },
   { slug: 'tetris', title: 'Tetris', genre: 'Puzzle', description: 'Clear lines with falling tactical blocks' },
   { slug: 'pacman', title: 'Pacman', genre: 'Arcade', description: 'Navigate the maze and evade enemy ghosts' },
+  { slug: 'minesweeper', title: 'Minesweeper', genre: 'Puzzle', description: 'Tactical minefield sector sweep and clearing' },
 ];
 
 export default function Hub() {
@@ -23,7 +29,6 @@ export default function Hub() {
   const [selectedGenre, setSelectedGenre] = useState('ALL');
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Redirect to landing if no player selected
   useEffect(() => {
     if (!currentPlayer) {
       navigate('/');
@@ -48,7 +53,7 @@ export default function Hub() {
         <div>
           <h1 className="title-text" style={{ fontSize: 32, margin: 0 }}>SHANKAR'S ARCADE</h1>
           <div style={{ fontFamily: 'var(--font-hud)', fontSize: 12, color: 'var(--accent-green)', letterSpacing: 2 }}>
-            [ OPERATIVE: {currentPlayer.name.toUpperCase()} ]
+            [ OPERATIVE: {currentPlayer.name.toUpperCase()} | 18 MISSIONS AVAILABLE ]
           </div>
         </div>
         <div style={{ display: 'flex', gap: 12 }}>
@@ -101,7 +106,7 @@ export default function Hub() {
               </div>
 
               <div>
-                <div style={{ fontFamily: 'var(--font-hud)', fontSize: 12, color: pb ? 'var(--accent-green)' : 'var(--text-muted)', marginBottom: 12 }}>
+                <div style={{ fontFamily: 'var(--font-hud)', fontSize: 12, color: pb !== null ? 'var(--accent-green)' : 'var(--text-muted)', marginBottom: 12 }}>
                   PERSONAL BEST: {pb !== null ? pb.toLocaleString() : '---'}
                 </div>
                 <div style={{ display: 'flex', gap: 8 }}>
