@@ -23,4 +23,7 @@ export const gameRegistry = {
   'cyber-mario': lazy(() => import('./CyberMario/CyberMario')),
   'cyber-shooter': lazy(() => import('./CyberShooter/CyberShooter')),
   'cyber-drift': lazy(() => import('./CyberDrift/CyberDrift')),
+  'rambo-run': lazy(() => import('./RamboRun/RamboRun')),
+  'temple-run': lazy(() => import('./TempleRun/TempleRun')),
+  'treasure-hunt': lazy(() => import('./TreasureHunt/TreasureHunt')),
 };
