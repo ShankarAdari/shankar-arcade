@@ -19,4 +19,8 @@ export const gameRegistry = {
   'lunar-lander': lazy(() => import('./LunarLander/LunarLander')),
   'cyber-frogger': lazy(() => import('./CyberFrogger/CyberFrogger')),
   'minesweeper': lazy(() => import('./Minesweeper/Minesweeper')),
+  'cyber-archery': lazy(() => import('./CyberArchery/CyberArchery')),
+  'cyber-mario': lazy(() => import('./CyberMario/CyberMario')),
+  'cyber-shooter': lazy(() => import('./CyberShooter/CyberShooter')),
+  'cyber-drift': lazy(() => import('./CyberDrift/CyberDrift')),
 };

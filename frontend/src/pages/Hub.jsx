@@ -8,9 +8,13 @@ const GAMES_DATA = [
   { slug: 'asteroid-blaster', title: 'Asteroid Blaster', genre: 'Shooter', description: 'Rotate your ship and blast asteroids that split on impact' },
   { slug: 'zombie-survival', title: 'Zombie Survival', genre: 'Shooter', description: 'Survive endless zombie waves in a post-apocalyptic warzone' },
   { slug: 'target-sniper', title: 'Target Sniper', genre: 'Shooter', description: 'Precision tactical marksmanship target timing' },
+  { slug: 'cyber-archery', title: 'Cyber Archery', genre: 'Shooter', description: 'Tactical bow simulator with wind drift physics & ring scoring' },
+  { slug: 'cyber-shooter', title: 'Cyber Shooter', genre: 'Shooter', description: 'Retro duck-hunt style drone shooter with ammo reloading' },
+  { slug: 'cyber-mario', title: 'Cyber Mario', genre: 'Platformer', description: 'Super Mario platformer with blocks, coins, Goombas & flag' },
   { slug: 'snake', title: 'Snake', genre: 'Arcade', description: 'Classic snake — grow longer without hitting yourself' },
   { slug: 'flappy-bird', title: 'Flappy Rocket', genre: 'Endless Runner', description: 'Fly a rocket through enemy missile gaps' },
   { slug: 'cyber-racer', title: 'Cyber Racer', genre: 'Endless Runner', description: 'High-speed highway obstacle evasion' },
+  { slug: 'cyber-drift', title: 'Cyber Drift', genre: 'Endless Runner', description: 'OutRun pseudo 3D arcade racing & nitro speed boost' },
   { slug: 'breakout', title: 'Breakout', genre: 'Arcade', description: 'Destroy all bricks with your tactical bouncing shot' },
   { slug: 'whack-a-mole', title: 'Whack-a-Mole', genre: 'Reflex', description: 'Destroy targets before they disappear' },
   { slug: 'laser-pong', title: 'Laser Pong', genre: 'Arcade', description: 'High-speed neon laser paddle table tennis' },
@@ -37,7 +41,7 @@ export default function Hub() {
 
   if (!currentPlayer) return null;
 
-  const genres = ['ALL', 'SHOOTER', 'ARCADE', 'PUZZLE', 'Endless Runner', 'Reflex'];
+  const genres = ['ALL', 'SHOOTER', 'PLATFORMER', 'ARCADE', 'PUZZLE', 'Endless Runner', 'Reflex'];
 
   const filteredGames = GAMES_DATA.filter(game => {
     const matchesGenre = selectedGenre === 'ALL' || game.genre.toUpperCase() === selectedGenre.toUpperCase();
@@ -53,7 +57,7 @@ export default function Hub() {
         <div>
           <h1 className="title-text" style={{ fontSize: 32, margin: 0 }}>SHANKAR'S ARCADE</h1>
           <div style={{ fontFamily: 'var(--font-hud)', fontSize: 12, color: 'var(--accent-green)', letterSpacing: 2 }}>
-            [ OPERATIVE: {currentPlayer.name.toUpperCase()} | 18 MISSIONS AVAILABLE ]
+            [ OPERATIVE: {currentPlayer.name.toUpperCase()} | 22 MISSIONS AVAILABLE ]
           </div>
         </div>
         <div style={{ display: 'flex', gap: 12 }}>
